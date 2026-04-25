@@ -5,8 +5,9 @@ This application demonstrates how to use the Zebra RFID SDK to connect to RFID r
 ## Features
 -   **Auto-Connection**: Automatically attempts to connect to available RFID readers on startup or when a device is attached.
 -   **USB & Bluetooth Support**: Supports Zebra Sled readers over USB (CDC mode) and Bluetooth (BTLE/Classic).
--   **Inventory**: Perform RFID tag inventory and view results in real-time.
--   **Visual Feedback**: Progress indicator (hourly-glass style) during inventory.
+-   **Inventory**: Perform RFID tag inventory with an edge-to-edge technical UI for high density data display.
+-   **Robust Hardware Handling**: Improved startup stability with concurrency guards and transport-aware fallbacks.
+-   **Visual Feedback**: Progress indicator (hourglass style) during inventory.
 -   **Permissions**: Handles Bluetooth permissions required for discovery and connection on Android 12+.
 
 ## Getting Started
@@ -15,4 +16,5 @@ This application demonstrates how to use the Zebra RFID SDK to connect to RFID r
 3.  Build and run on a Zebra device (e.g., TC22) or any Android device with Zebra RFID sleds.
 
 ## Version
+- **v0.0.4**: Edge-to-edge UI, robust init, and technical messaging refinement.
 - **Init**: Initial release with core functionality and fixes.

@@ -18,6 +18,7 @@ This document describes the implemented architecture and runtime behavior for US
     - Manages `inventoryProgress` (ProgressBar) visibility based on SDK inventory events.
 - `RFIDHandler`
   - Owns Zebra `Readers`, selected `ReaderDevice`, active `RFIDReader`, and event lifecycle.
+  - Implements a thread-safe initialization gate (`isInitializing`) to prevent race conditions during SDK startup.
   - Performs async discovery, connect, and event-side work with explicit background threads plus UI handoff where needed.
   - Emits status and data back to `MainActivity` through callback methods.
   - Keeps transport flags synchronized across connect and teardown paths.
@@ -66,6 +67,7 @@ After connection, the following are enabled:
 ## 5. State Model
 - `reader`, `readerDevice`, and `readers` represent the current transport/session objects.
 - `bIsReading` gates inventory calls.
+- `isInitializing` prevents concurrent SDK initialization attempts.
 - `bIsBTReader` tracks Bluetooth-connected state and controls the Bluetooth disconnect recovery path.
 - `bIsBTReader` is updated from the selected or connected reader and reset on disconnect/dispose.
 
@@ -98,9 +100,11 @@ After connection, the following are enabled:
   - premature Bluetooth permission warning shown during startup request
   - launcher script package mismatch
   - transport-blind preferred reader selection
-- Remaining work is mostly structural rather than correctness-critical:
-  - reduce method complexity in `MainActivity` and `RFIDHandler`
-  - externalize preferred reader names into configuration
+  - concurrent initialization race conditions in RFIDHandler
+- UI and Technical Refinements:
+  - Migrated to edge-to-edge layout for tag list items (zero margin/radius).
+  - Standardized on "Transport" terminology instead of "Reader" or "Connection" for lower-level status.
+  - Resolved ProGuard deprecation by switching to `proguard-android-optimize.txt`.
 
 ## 9. Release Readiness
 - BuildConfig generation is configured in `app/build.gradle` instead of the deprecated global Gradle property.

@@ -1,5 +1,33 @@
 # Release Notes
 
+## v0.0.4 (2026-04-22)
+
+- Title: UI Refinement, Robust Initialization, and Technical Messaging
+
+### Highlights
+
+- **Edge-to-Edge UI**: Modified tag list items to span the full width of the application by removing horizontal margins and corner radii, providing a more professional technical appearance.
+- **Robust Initialization**: Implemented an initialization gate in `RFIDHandler` to prevent concurrent SDK initialization attempts and potential startup crashes when hardware is not present.
+- **Technical Messaging Refinement**: Performed a global audit of UI status messages and logs, standardizing on precise technical terminology (e.g., "Transport Latency", "USB/Bluetooth Transport", "Detected (Disconnected)").
+- **Build Optimization**: Updated ProGuard configuration to use `proguard-android-optimize.txt` for improved R8 optimizations and to resolve deprecation warnings.
+
+### Technical Changes
+
+- Main logic:
+  - `app/src/main/java/com/zebra/rfid/demo/sdksample/RFIDHandler.java`: Added `isInitializing` guard, improved error handling in async init, and refined log/UI strings.
+  - `app/src/main/java/com/zebra/rfid/demo/sdksample/MainActivity.java`: Improved lifecycle handling in `onPostResume`.
+- Layouts:
+  - `app/src/main/res/layout/tag_list_item.xml`: Removed margins and elevation for edge-to-edge display.
+  - `app/src/main/res/layout/activity_main.xml`: Refined constraints for `lstTags`.
+- Build:
+  - `app/build.gradle`: Updated ProGuard file.
+
+### Validation Summary
+
+- Verified edge-to-edge layout on device.
+- Stress-tested startup without reader hardware to ensure no crashes.
+- Confirmed technical string accuracy in UI.
+
 ## v0.0.3 (2026-04-21)
 
 - Title: Startup permission recovery, pre-check-in cleanup, release prep
