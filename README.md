@@ -16,5 +16,5 @@ This application demonstrates how to use the Zebra RFID SDK to connect to RFID r
 3.  Build and run on a Zebra device (e.g., TC22) or any Android device with Zebra RFID sleds.
 
 ## Version
-- **v0.0.4**: Edge-to-edge UI, robust init, and technical messaging refinement.
+- **1.0.0**: Production release with edge-to-edge UI, robust initialization, and technical messaging refinement.
 - **Init**: Initial release with core functionality and fixes.

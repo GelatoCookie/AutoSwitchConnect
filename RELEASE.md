@@ -1,8 +1,9 @@
 # Release Notes
 
-## v0.0.4 (2026-04-22)
+## 1.0.0 (2026-04-22)
 
-- Title: UI Refinement, Robust Initialization, and Technical Messaging
+- Tag: `1.0.0`
+- Title: Production Release - UI Refinement, Robust Initialization, and Technical Messaging
 
 ### Highlights
 
