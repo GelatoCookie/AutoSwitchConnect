@@ -17,6 +17,7 @@
     <string name="usb_permission_denied">Permission denied</string>
 
     <string name="rfid_status_label">RFID Status</string>
+    <string name="status_searching">Searching for RFID Readers and Transports Automatically...</string>
     <string name="status_disconnected">Disconnected</string>
     <string name="start_inventory">Start</string>
     <string name="stop_inventory">Stop</string>

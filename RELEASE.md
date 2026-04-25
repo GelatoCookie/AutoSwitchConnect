@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.0.1 (2026-04-22)
+
+- Title: Enhanced Startup UX - Automatic Transport Discovery Messaging
+
+### Highlights
+
+- **Startup Messaging**: Added a clear "Searching for RFID Readers and Transports Automatically..." status message on app launch to provide immediate user feedback during the SDK initialization and hardware discovery phase.
+- **UI Consistency**: Updated the default status in the layout to ensure users see the automated discovery intent before hardware is connected.
+
+### Technical Changes
+
+- Layouts:
+  - `app/src/main/res/layout/activity_main.xml`: Set default text to `@string/status_searching`.
+- Resources:
+  - `app/src/main/res/values/strings.xml`: Added `status_searching` string.
+
 ## 1.0.0 (2026-04-22)
 
 - Tag: `1.0.0`
