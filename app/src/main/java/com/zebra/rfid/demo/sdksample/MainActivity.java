@@ -438,4 +438,13 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
             }
         });
     }
+
+    @Override
+    public void updateProgress(boolean show) {
+        runOnUiThread(() -> {
+            if (inventoryProgress != null) {
+                inventoryProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
 }

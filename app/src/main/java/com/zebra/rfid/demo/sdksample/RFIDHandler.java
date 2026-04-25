@@ -164,6 +164,7 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
         Log.d(TAG, "InitSDK, isInitializing=" + isInitializing);
         if (isInitializing) return;
 
+        context.updateProgress(true);
         if (readers == null) {
             isInitializing = true;
             initializeReadersAsync();
@@ -223,8 +224,10 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
             Log.d(TAG, "NO Connection: ConnectionTask...");
             connectReaderAsync();
         }
-        else
+        else {
             Log.d(TAG, "Connected; skip connectReader() method");
+            context.updateProgress(false);
+        }
     }
 
     private void connectReaderAsync() {
@@ -241,6 +244,7 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
             }
             postToUiThread(() -> {
                 if (textView != null) textView.setText(result);
+                context.updateProgress(false);
             });
         });
     }
@@ -733,6 +737,8 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
         void sendToast(String val);
 
         void inventoryStartEvent(boolean started);
+
+        void updateProgress(boolean show);
     }
 
 }

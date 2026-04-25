@@ -1261,6 +1261,7 @@
     <string name="start_inventory">Start</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="status_disconnected">Disconnected</string>
+    <string name="status_searching">Searching for RFID Readers and Transports Automatically...</string>
     <string name="stop_inventory">Stop</string>
     <string name="tag_count_format">Count: %1$d</string>
     <string name="tag_rssi_format">RSSI: %1$d</string>

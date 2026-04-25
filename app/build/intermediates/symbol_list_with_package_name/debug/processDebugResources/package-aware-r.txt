@@ -2609,6 +2609,7 @@ string search_menu_title
 string start_inventory
 string status_bar_notification_info_overflow
 string status_disconnected
+string status_searching
 string stop_inventory
 string tag_count_format
 string tag_rssi_format

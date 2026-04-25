@@ -1,5 +1,20 @@
 # Release Notes
 
+## 1.0.2 (2026-04-22)
+
+- Title: Startup UX - Non-blocking Discovery Progress Indicator
+
+### Highlights
+
+- **Discovery Progress**: Integrated a non-blocking progress indicator (ProgressBar) that appears during the automated transport discovery and SDK initialization phase at startup.
+- **Auto-Dismiss**: The progress indicator automatically dismisses once a connection result (success or failure) is obtained, providing clear visual feedback of the background discovery process.
+
+### Technical Changes
+
+- Main logic:
+  - `app/src/main/java/com/zebra/rfid/demo/sdksample/RFIDHandler.java`: Added `updateProgress` to the callback interface and triggered it during initialization.
+  - `app/src/main/java/com/zebra/rfid/demo/sdksample/MainActivity.java`: Implemented `updateProgress` to toggle the visibility of the `inventoryProgress` view.
+
 ## 1.0.1 (2026-04-22)
 
 - Title: Enhanced Startup UX - Automatic Transport Discovery Messaging
