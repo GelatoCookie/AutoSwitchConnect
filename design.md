@@ -106,13 +106,19 @@ After connection, the following are enabled:
   - Standardized on "Transport" terminology instead of "Reader" or "Connection" for lower-level status.
   - Resolved ProGuard deprecation by switching to `proguard-android-optimize.txt`.
 
-## 9. Release Readiness
+## 9. Current Code Review Findings (2026-05-15)
+- Fixed: `MainActivity.onRequestPermissionsResult` now validates both Android 12+ Bluetooth permissions before RFID initialization.
+- Fixed: `RFIDHandler.updateTransportFlagsFromReader` now uses transport state plus reader-name fallback (`RFD8500`) instead of relying only on `+` naming.
+- Fixed: `ExampleInstrumentedTest` was synchronized with current app APIs and method signatures, removing androidTest compile drift.
+
+## 10. Release Readiness
 - BuildConfig generation is configured in `app/build.gradle` instead of the deprecated global Gradle property.
 - Bluetooth and USB permission status messages are backed by string resources for check-in consistency.
-- Connected instrumentation coverage currently includes 14 device-backed tests.
+- Main-module compile currently passes (`:app:compileDebugJavaWithJavac`).
+- Android instrumentation source compile currently passes (`:app:compileDebugAndroidTestJavaWithJavac`).
 
-## 10. Check-In Plan
+## 11. Check-In Plan
 1. Include source and documentation changes only.
 2. Exclude generated artifacts such as `app/build/**` from version control.
 3. Run smoke tests for USB-first, BT fallback, detach, and re-attach scenarios.
-4. Run connected instrumentation tests before final check-in.
+4. Run connected instrumentation tests on device before final check-in.

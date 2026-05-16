@@ -37,6 +37,13 @@ import com.zebra.scannercontrol.IDcsSdkApiDelegate;
 import com.zebra.scannercontrol.SDKHandler;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @noinspection ALL
@@ -56,7 +63,10 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     private ArrayList<DCSScannerInfo> scannerList;
     private int scannerID;
     private int maxPower = 270;
-    private volatile boolean bIsReading = false;
+    private final AtomicBoolean bIsReading = new AtomicBoolean(false);
+    private final AtomicBoolean isConnecting = new AtomicBoolean(false);
+    private final AtomicBoolean isConnectionQueued = new AtomicBoolean(false);
+    private final ExecutorService workQueue = Executors.newSingleThreadExecutor();
 
     // In case of RFD8500 change reader name with intended device below from list of paired RFD8500
     // If barcode scan is available in RFD8500, for barcode scanning change mode using mode button on RFD8500 device. By default it is set to RFID mode
@@ -69,12 +79,23 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 
     private void updateTransportFlagsFromReader() {
-        bIsBTReader = reader != null && reader.getHostName() != null && reader.getHostName().contains("+");
+        if (reader == null) {
+            bIsBTReader = false;
+            return;
+        }
+
+        String hostName = reader.getHostName();
+        boolean bluetoothByName = hostName != null && (hostName.contains("+") || hostName.startsWith("RFD8500"));
+        bIsBTReader = currentTransport == ENUM_TRANSPORT.BLUETOOTH || bluetoothByName;
     }
 
     public void onCreate(MainActivity activity) {
         context = activity;
         textView = activity.getStatusTextViewRFID();
+        if (readers != null) {
+            Log.d(TAG, "RFIDHandler already initialized, skipping InitSDK");
+            return;
+        }
         scannerList = new ArrayList<>();
         Log.d(TAG, "RFIDHandler onCreate");
         InitSDK();
@@ -103,7 +124,7 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     @Override
     public void dcssdkEventBarcode(byte[] barcodeData, int barcodeType, int fromScannerID) {
         String s = new String(barcodeData);
-        context.barcodeData(s);
+        if (context != null) context.barcodeData(s);
         Log.d(TAG, "barcode = " + s);
     }
 
@@ -147,8 +168,8 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     //  Activity life cycle behavior
     //
 
-    String onResume() {
-        return connectMethod();
+    void onResume() {
+        connectReader();
     }
 
     void onDestroy() {
@@ -160,11 +181,11 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     //
     private boolean isInitializing = false;
 
-    public synchronized void InitSDK() {
+    public void InitSDK() {
         Log.d(TAG, "InitSDK, isInitializing=" + isInitializing);
         if (isInitializing) return;
 
-        context.updateProgress(true);
+        if (context != null) context.updateProgress(true);
         if (readers == null) {
             isInitializing = true;
             initializeReadersAsync();
@@ -178,7 +199,7 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     }
 
     private void initializeReadersAsync() {
-        runAsyncTask(() -> {
+        runOnWorkQueue(() -> {
             try {
                 initializeReaders();
             } finally {
@@ -193,6 +214,10 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
 
     private void initializeReaders() {
         Log.d(TAG, "initializeReaders");
+
+        if (readers != null) {
+            dispose();
+        }
 
         try {
             readers = new Readers(context, ENUM_TRANSPORT.SERVICE_USB);
@@ -220,32 +245,42 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     }
 
     private synchronized void connectReader(){
+        if (isConnectionQueued.get() || isConnecting.get()) {
+            Log.d(TAG, "connectReader: Connection already queued or in progress, skipping");
+            return;
+        }
         if(!isReaderConnected() ) {
+            isConnectionQueued.set(true);
             Log.d(TAG, "NO Connection: ConnectionTask...");
             connectReaderAsync();
         }
         else {
             Log.d(TAG, "Connected; skip connectReader() method");
-            context.updateProgress(false);
+            if (context != null) context.updateProgress(false);
         }
     }
 
     private void connectReaderAsync() {
-        runAsyncTask(() -> {
-            Log.d(TAG, "connectReaderAsync");
-            getAvailableReader();
-            String result;
-            if (!hasAvailableReaders()) {
-                result = "No reader detected. Please connect via USB or pair via Bluetooth.";
-            } else if (reader == null) {
-                result = "Target reader not found in available device list.";
-            } else {
-                result = connectMethod();
+        runOnWorkQueue(() -> {
+            try {
+                Log.d(TAG, "connectReaderAsync starting");
+                getAvailableReader();
+                String result;
+                if (!hasAvailableReaders()) {
+                    result = "No reader detected. Please connect via USB or pair via Bluetooth.";
+                } else if (reader == null) {
+                    result = "Target reader not found in available device list.";
+                } else {
+                    result = connectMethod();
+                }
+                final String finalResult = result;
+                postToUiThread(() -> {
+                    if (textView != null) textView.setText(finalResult);
+                    if (context != null) context.updateProgress(false);
+                });
+            } finally {
+                isConnectionQueued.set(false);
             }
-            postToUiThread(() -> {
-                if (textView != null) textView.setText(result);
-                context.updateProgress(false);
-            });
         });
     }
 
@@ -314,80 +349,115 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
         if (transport == ENUM_TRANSPORT.BLUETOOTH) {
             return deviceName.startsWith(readerNamebt) || deviceName.startsWith(readerNameRfd8500);
         }
-        return deviceName.startsWith(readerName);
+        return deviceName.startsWith(readerName) || deviceName.startsWith("RFD40") || deviceName.startsWith("RFD90") || deviceName.startsWith("RFD8500");
     }
 
     @Override
     public void RFIDReaderAppeared(ReaderDevice readerDevice) {
         Log.d(TAG, "RFIDReaderAppeared: " + readerDevice.getName());
         if (reader != null && reader.isConnected()) {
-            context.dismissConnectionDialog();
-            context.updateStatus("Reader Attached and Connected:\n" + reader.getHostName());
+            if (context != null) {
+                context.dismissConnectionDialog();
+                context.updateStatus("Reader Attached and Connected:\n" + reader.getHostName());
+            }
         } else {
-            context.updateStatus("Reader Detected (Disconnected).\nVerify battery level or re-seat connection.");
+            if (context != null) context.updateStatus("Reader Detected (Disconnected).\nVerify battery level or re-seat connection.");
         }
     }
 
     @Override
     public void RFIDReaderDisappeared(ReaderDevice readerDevice) {
         Log.d(TAG, "RFIDReaderDisappeared: " + readerDevice.getName());
-        context.sendToast("Reader Disappeared: " + readerDevice.getName());
+        if (context != null) context.sendToast("Reader Disappeared: " + readerDevice.getName());
 
         String interfaceType = (currentTransport == ENUM_TRANSPORT.SERVICE_USB) ? "USB" : "Bluetooth";
-        context.sendStatusText(interfaceType + " Transport Disconnected.\nCheck power and connection state.");
+        if (context != null) context.sendStatusText(interfaceType + " Transport Disconnected.\nCheck power and connection state.");
 
         disconnect();
         onDestroy();
 
         Log.d(TAG, "Reader disappeared. Attempting to fall back to Bluetooth transport.");
-        context.bt_usb_connect();
+        if (context != null) context.bt_usb_connect();
     }
 
 
-    private synchronized String connectMethod() {
-        if (reader != null) {
-            Log.d(TAG, "connectMethod connecting " + reader.getHostName());
-            try {
-                if (!reader.isConnected()) {
-                    // Establish connection to the RFID Reader
-                    long connectStart = System.currentTimeMillis();
-                    reader.connect();
-                    updateTransportFlagsFromReader();
-
-                    long connectTimeMillis = System.currentTimeMillis() - connectStart;
-                    Log.d(TAG, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                    Log.d(TAG, "& Connect API Total Time=" + connectTimeMillis + " ms");
-                    Log.d(TAG, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
-                    configureReader(connectTimeMillis);
-
-                    if(reader.isConnected()){
-                        context.dismissConnectionDialog();
-                        context.sendToast("Connected, Time=" + connectTimeMillis + " ms");
-                        return "Connected: " + reader.getHostName() + ". Time=" + connectTimeMillis + " ms";
-                    }
-                }
-                else{
-                    Log.d(TAG, "Already Connected");
-                    updateTransportFlagsFromReader();
-                    context.dismissConnectionDialog();
-                    context.sendToast("Connected: " + reader.getHostName());
-                    return "Connected: " + reader.getHostName();
-                }
-
-            } catch (InvalidUsageException e) {
-                e.printStackTrace();
-            } catch (OperationFailureException e) {
-                e.printStackTrace();
-                Log.e(TAG, "OperationFailureException: " + e.getVendorMessage());
-                String details = e.getResults().toString();
-                return "Connection failed: " + details + ".\nVerify device is powered on.";
-            } catch (SecurityException e) {
-                Log.e(TAG, "SecurityException while connecting reader", e);
-                return "Connection failed: Bluetooth permissions missing";
-            }
+    private String connectMethod() {
+        if (!isConnecting.compareAndSet(false, true)) {
+            Log.d(TAG, "connectMethod: already connecting, skipping duplicate call");
+            return "Connection already in progress.";
         }
-        return "";
+        try {
+            RFIDReader localReader;
+            synchronized (this) {
+                localReader = reader;
+            }
+            if (localReader != null) {
+                Log.d(TAG, "connectMethod connecting " + localReader.getHostName());
+                try {
+                    if (!localReader.isConnected()) {
+                        // Establish connection to the RFID Reader
+                        long connectStart = System.currentTimeMillis();
+                        try {
+                            localReader.connect();
+                        } catch (Exception e) {
+                            if (e.getMessage() != null && e.getMessage().contains("Already running")) {
+                                Log.w(TAG, "Reader report already running, trying to disconnect and reconnect");
+                                try { localReader.disconnect(); } catch (Exception ignored) {}
+                                localReader.connect();
+                            } else {
+                                throw e;
+                            }
+                        }
+                        updateTransportFlagsFromReader();
+
+                        long connectTimeMillis = System.currentTimeMillis() - connectStart;
+                        Log.d(TAG, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                        Log.d(TAG, "& Connect API Total Time=" + connectTimeMillis + " ms");
+                        Log.d(TAG, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+                        configureReader(connectTimeMillis);
+
+                        if(localReader.isConnected()){
+                            postToUiThread(() -> {
+                                if (context != null) {
+                                    context.dismissConnectionDialog();
+                                    context.sendToast("Connected, Time=" + connectTimeMillis + " ms");
+                                }
+                            });
+                            return "Connected: " + localReader.getHostName() + ". Time=" + connectTimeMillis + " ms";
+                        }
+                    }
+                    else{
+                        Log.d(TAG, "Already Connected");
+                        updateTransportFlagsFromReader();
+                        postToUiThread(() -> {
+                            if (context != null) {
+                                context.dismissConnectionDialog();
+                                context.sendToast("Connected: " + localReader.getHostName());
+                            }
+                        });
+                        return "Connected: " + localReader.getHostName();
+                    }
+
+                } catch (InvalidUsageException e) {
+                    e.printStackTrace();
+                } catch (OperationFailureException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "OperationFailureException: " + e.getVendorMessage());
+                    String details = e.getResults().toString();
+                    return "Connection failed: " + details + ".\nVerify device is powered on.";
+                } catch (SecurityException e) {
+                    Log.e(TAG, "SecurityException while connecting reader", e);
+                    return "Connection failed: Bluetooth permissions missing";
+                } catch (Exception e) {
+                    Log.e(TAG, "Unexpected exception during connect", e);
+                    return "Connection failed: " + e.getMessage();
+                }
+            }
+            return "";
+        } finally {
+            isConnecting.set(false);
+        }
     }
 
     private void configureReader(long connectTimeMillis) {
@@ -409,10 +479,10 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
 
                 reader.Events.setInventoryStartEvent(true);
                 reader.Events.setInventoryStopEvent(true);
-                bIsReading = false;
+                bIsReading.set(false);
 
                 playConnectTone();
-                context.sendStatusText("Reader Configured: " + reader.getHostName() + "\nTransport Latency: " + connectTimeMillis + " ms");
+                if (context != null) context.sendStatusText("Reader Configured: " + reader.getHostName() + "\nTransport Latency: " + connectTimeMillis + " ms");
 
             } catch (InvalidUsageException | OperationFailureException e) {
                 Log.e(TAG, "Error during reader configuration", e);
@@ -446,8 +516,12 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
         new Thread(action).start();
     }
 
+    private void runOnWorkQueue(Runnable action) {
+        workQueue.execute(action);
+    }
+
     private void postToUiThread(Runnable action) {
-        context.runOnUiThread(action);
+        if (context != null) context.runOnUiThread(action);
     }
 
     public void setPrefilterForSearchAndFind(int characterLength){
@@ -554,58 +628,66 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
         try {
             if (reader != null) {
                 if (eventHandler != null) {
-                    reader.Events.removeEventsListener(eventHandler);
+                    try {
+                        reader.Events.removeEventsListener(eventHandler);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error removing listener", e);
+                    }
                     eventHandler = null;
                 }
                 if(isReaderConnected()) {
                     reader.disconnect();
                     bIsBTReader = false;
-                    context.sendToast("Disconnected!!!");
-                    new Thread(() -> toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200)).start();
-
+                    if (context != null) context.sendToast("Disconnected!!!");
+                    if (toneG != null) {
+                        new Thread(() -> {
+                            try {
+                                toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+                            } catch (Exception ignored) {}
+                        }).start();
+                    }
                 }
             }
-        } catch (InvalidUsageException e) {
-            e.printStackTrace();
-        } catch (OperationFailureException e) {
-            e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error during disconnect", e);
         }
     }
 
     private synchronized void dispose() {
+        Log.d(TAG, "dispose");
         disconnect();
         try {
             if (reader != null) {
-                if (eventHandler != null)
-                    reader.Events.removeEventsListener(eventHandler);
-
                 reader = null;
-                bIsBTReader = false;
             }
 
             Log.d(TAG, "Dispose readers");
             if (readers != null) {
                 readers.deattach(this);
                 readers.Dispose();
-
                 readers = null;
+            }
+
+            if (sdkHandler != null) {
+                sdkHandler.dcssdkUnsubsribeForEvents(buildScannerNotificationMask());
+                sdkHandler = null;
             }
 
             availableRFIDReaderList = null;
             readerDevice = null;
             bIsBTReader = false;
-
+            isInitializing = false;
+            isConnecting.set(false);
+            isConnectionQueued.set(false);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error during dispose", e);
         }
     }
 
     synchronized void performInventory() {
         try {
-            if(reader!=null && isReaderConnected() && bIsReading==false)
+            if(reader!=null && isReaderConnected() && !bIsReading.get())
                 reader.Actions.Inventory.perform();
         } catch (InvalidUsageException e) {
             e.printStackTrace();
@@ -642,7 +724,7 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
 
     public void scanCode(){
         String inXml = "<inArgs><scannerID>" + scannerID + "</scannerID></inArgs>";
-        runAsyncTask(() -> executeCommand(DCSSDKDefs.DCSSDK_COMMAND_OPCODE.DCSSDK_DEVICE_PULL_TRIGGER, inXml, null, scannerID));
+        runOnWorkQueue(() -> executeCommand(DCSSDKDefs.DCSSDK_COMMAND_OPCODE.DCSSDK_DEVICE_PULL_TRIGGER, inXml, null, scannerID));
     }
     public boolean executeCommand(DCSSDKDefs.DCSSDK_COMMAND_OPCODE opCode, String inXML, StringBuilder outXML, int scannerID) {
         if (sdkHandler != null)
@@ -664,28 +746,38 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
     public class EventHandler implements RfidEventsListener {
         // Read Event Notification
         public void eventReadNotify(RfidReadEvents e) {
-            TagData[] myTags = reader.Actions.getReadTags(100);
-            if (myTags != null) {
-                for (int index = 0; index < myTags.length; index++) {
-                    Log.d(TAG, "Tag ID" + myTags[index].getTagID() +"RSSI value "+ myTags[index].getPeakRSSI());
-                    Log.d(TAG, "RSSI value "+ myTags[index].getPeakRSSI());
+            RFIDReader localReader = reader;
+            if (localReader == null) return;
+            try {
+                TagData[] myTags = localReader.Actions.getReadTags(100);
+                if (myTags != null) {
+                    for (int index = 0; index < myTags.length; index++) {
+                        if (myTags[index] != null) {
+                            Log.d(TAG, "Tag ID" + myTags[index].getTagID() + "RSSI value " + myTags[index].getPeakRSSI());
+                        }
+                    }
+                    postToUiThread(() -> {
+                        if (context != null) context.handleTagdata(myTags);
+                    });
                 }
-                runAsyncTask(() -> context.handleTagdata(myTags));
+            } catch (Exception ex) {
+                Log.e(TAG, "Exception in eventReadNotify", ex);
             }
         }
 
         // Status Event Notification
         public void eventStatusNotify(RfidStatusEvents rfidStatusEvents) {
+            if (rfidStatusEvents == null || rfidStatusEvents.StatusEventData == null) return;
             STATUS_EVENT_TYPE statusEventType = rfidStatusEvents.StatusEventData.getStatusEventType();
             Log.d(TAG, "Status Notification: " + statusEventType);
 
             if (statusEventType == STATUS_EVENT_TYPE.INVENTORY_START_EVENT) {
-                bIsReading = true;
-                context.inventoryStartEvent(true);
+                bIsReading.set(true);
+                if (context != null) context.inventoryStartEvent(true);
             }
             if (statusEventType == STATUS_EVENT_TYPE.INVENTORY_STOP_EVENT) {
-                bIsReading = false;
-                context.inventoryStartEvent(false);
+                bIsReading.set(false);
+                if (context != null) context.inventoryStartEvent(false);
             }
 
             if (statusEventType == STATUS_EVENT_TYPE.HANDHELD_TRIGGER_EVENT) {
@@ -701,29 +793,35 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
         private void handleTriggerEvent(RfidStatusEvents rfidStatusEvents) {
             HANDHELD_TRIGGER_EVENT_TYPE triggerEventType = rfidStatusEvents.StatusEventData.HandheldTriggerEventData.getHandheldEvent();
             if (triggerEventType == HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_PRESSED) {
-                runAsyncTask(() -> {
+                postToUiThread(() -> {
                     Log.d(TAG, "HANDHELD_TRIGGER_PRESSED");
-                    context.handleTriggerPress(true);
+                    if (context != null) context.handleTriggerPress(true);
                 });
                 return;
             }
 
             if (triggerEventType == HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_RELEASED) {
-                runAsyncTask(() -> {
-                    context.handleTriggerPress(false);
+                postToUiThread(() -> {
+                    if (context != null) context.handleTriggerPress(false);
                     Log.d(TAG, "HANDHELD_TRIGGER_RELEASED");
                 });
             }
         }
 
         private void handleBluetoothDisconnection() {
-            runAsyncTask(() -> {
+            runOnWorkQueue(() -> {
                 String disappearedName = readerDevice != null ? readerDevice.getName() : "unknown";
                 Log.d(TAG, "BLUETOOTH DISCONNECTION_EVENT " + disappearedName);
-                context.sendToast("BLUETOOTH DISCONNECTION_EVENT");
+                postToUiThread(() -> {
+                    if (context != null) context.sendToast("BLUETOOTH DISCONNECTION_EVENT");
+                });
                 onDestroy();
-                context.sendStatusText("Bluetooth Transport Disconnected\r\nReconnect Battery or Re-Attach RFD40\r\nClick Setting Dots Upper Right Corner and Connect");
-                context.bt_usb_connect();
+                postToUiThread(() -> {
+                    if (context != null) {
+                        context.sendStatusText("Bluetooth Transport Disconnected\r\nReconnect Battery or Re-Attach RFD40\r\nClick Setting Dots Upper Right Corner and Connect");
+                        context.bt_usb_connect();
+                    }
+                });
             });
         }
     }

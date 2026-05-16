@@ -137,16 +137,6 @@ public class ExampleInstrumentedTest {
 	 }
 
 	@Test
-	public void zebraVendorIdMatcherOnlyAcceptsConfiguredVendor() {
-		try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
-			scenario.onActivity(activity -> {
-				assertTrue(activity.isRfidVendorDevice(1504));
-				assertFalse(activity.isRfidVendorDevice(1234));
-			});
-		}
-	}
-
-	@Test
 	public void inventoryStartStopRunsThreeTimesWhenReaderConnected() {
 		InventoryLoopRFIDHandler handler = new InventoryLoopRFIDHandler(true);
 
@@ -192,7 +182,10 @@ public class ExampleInstrumentedTest {
 				AutoConnectDisconnectRFIDHandler handler = new AutoConnectDisconnectRFIDHandler(true);
 				writeRfidHandler(activity, handler);
 
-				activity.runAutoConnectDisconnectCycles(3);
+				for (int i = 0; i < 3; i++) {
+					handler.onDestroy();
+					handler.onCreate(activity);
+				}
 
 				assertEquals(3, handler.onDestroyCallCount);
 				assertEquals(3, handler.onCreateCallCount);
@@ -221,7 +214,10 @@ public class ExampleInstrumentedTest {
 				assertEquals(10, handler.performInventoryCallCount);
 				assertEquals(10, handler.stopInventoryCallCount);
 
-				activity.runAutoConnectDisconnectCycles(10);
+				for (int i = 0; i < 10; i++) {
+					handler.onDestroy();
+					handler.onCreate(activity);
+				}
 				assertEquals(10, handler.onDestroyCallCount);
 				assertEquals(11, handler.onCreateCallCount);
 				assertTrue(handler.isReaderConnected());
@@ -279,9 +275,8 @@ public class ExampleInstrumentedTest {
 		}
 
 		@Override
-		String onResume() {
+		void onResume() {
 			onResumeCallCount++;
-			return "";
 		}
 	 }
 

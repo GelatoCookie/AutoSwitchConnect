@@ -1,0 +1,35 @@
+flowchart TD
+    Start([Start Connection Flow]) --> CheckInit{isInitializing?}
+    CheckInit -- Yes --> End([Exit])
+    CheckInit -- No --> CheckReaders{readers == null?}
+
+    CheckReaders -- Yes --> InitSDK[Set isInitializing=true<br/>initializeReadersAsync]
+    InitSDK --> DisposeOld[Dispose Old Readers]
+    DisposeOld --> CreateReaders[Create Readers Object]
+    CreateReaders --> SetInitFalse[Set isInitializing=false]
+    SetInitFalse --> CheckQueue
+
+    CheckReaders -- No --> CheckQueue{isConnectionQueued OR isConnecting?}
+
+    CheckQueue -- Yes --> End
+    CheckQueue -- No --> QueueTask[Set isConnectionQueued=true<br/>Post connectReaderAsync to WorkQueue]
+
+    QueueTask --> GetAvailable[Get Available Readers]
+    GetAvailable --> ConnectMethod{connectMethod}
+
+    ConnectMethod --> CAS[isConnecting.compareAndSet false -> true]
+    CAS -- Fail --> ClearQueue[Set isConnectionQueued=false]
+    CAS -- Success --> CheckConnected{reader.isConnected?}
+
+    CheckConnected -- Yes --> Finish[Configure Reader<br/>Set isConnecting=false<br/>Set isConnectionQueued=false]
+    CheckConnected -- No --> TryConnect[reader.connect]
+
+    TryConnect -- Success --> Finish
+    TryConnect -- "Error: Already running" --> SurgicalReset[reader.disconnect<br/>reader.connect]
+    SurgicalReset -- Success --> Finish
+    SurgicalReset -- Fail --> ErrorHandler[Log Error<br/>Set isConnecting=false<br/>Set isConnectionQueued=false]
+    TryConnect -- Other Fail --> ErrorHandler
+
+    Finish --> End
+    ClearQueue --> End
+    ErrorHandler --> End

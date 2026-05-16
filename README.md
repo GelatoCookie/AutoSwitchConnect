@@ -20,3 +20,11 @@ This application demonstrates how to use the Zebra RFID SDK to connect to RFID r
 - **1.0.1**: Added automated transport discovery messaging on app startup.
 - **1.0.0**: Production release with edge-to-edge UI, robust initialization, and technical messaging refinement.
 - **Init**: Initial release with core functionality and fixes.
+
+## Current Review Status (2026-05-15)
+- Main Java compile check passed: `./gradlew :app:compileDebugJavaWithJavac`.
+- Android test-source compile passed: `./gradlew :app:compileDebugAndroidTestJavaWithJavac`.
+- Completed fixes:
+	- Permission callback now requires both Android 12+ Bluetooth permissions before RFID init.
+	- Bluetooth transport detection now uses active transport state with reader-name fallback for robust disconnect handling.
+	- Instrumentation tests are synchronized with current app APIs/signatures.

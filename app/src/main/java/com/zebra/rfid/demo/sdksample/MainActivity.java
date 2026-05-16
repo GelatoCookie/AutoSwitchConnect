@@ -92,10 +92,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         Log.d(TAG, "MainActivity onCreate init");
         rfidHandler = new RFIDHandler();
 
-        if (ensureBluetoothPermissionsForRfidInit()) {
-            rfidHandler.onCreate(this);
-        }
-
+        // Removed redundant rfidHandler.onCreate(this) here as it is called in onPostResume via InitRfidSDK()
         requestPermission(null);
     }
 
@@ -150,14 +147,44 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
     private boolean ensureBluetoothPermissionsForRfidInit() {
         if (bluetoothPermissionOverrideForTests != null) return bluetoothPermissionOverrideForTests;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+        if (hasAndroid12BluetoothPermissions()) {
             return true;
         }
         ActivityCompat.requestPermissions(this,
             new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT},
             BLUETOOTH_PERMISSION_REQUEST_CODE);
         return false;
+    }
+
+    private boolean hasAndroid12BluetoothPermissions() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED &&
+               ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean areBluetoothPermissionsGrantedFromResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (bluetoothPermissionOverrideForTests != null) return bluetoothPermissionOverrideForTests;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
+
+        boolean sawScan = false;
+        boolean sawConnect = false;
+        boolean scanGranted = false;
+        boolean connectGranted = false;
+        int checkedCount = Math.min(permissions.length, grantResults.length);
+
+        for (int i = 0; i < checkedCount; i++) {
+            if (Manifest.permission.BLUETOOTH_SCAN.equals(permissions[i])) {
+                sawScan = true;
+                scanGranted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+            } else if (Manifest.permission.BLUETOOTH_CONNECT.equals(permissions[i])) {
+                sawConnect = true;
+                connectGranted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+            }
+        }
+
+        if (!sawScan || !sawConnect) {
+            return hasAndroid12BluetoothPermissions();
+        }
+        return scanGranted && connectGranted;
     }
 
     public void setBluetoothPermissionOverrideForTests(Boolean override) {
@@ -167,14 +194,24 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
     public void InitRfidSDK() {
         if (ensureBluetoothPermissionsForRfidInit()) {
             if (rfidHandler == null) rfidHandler = new RFIDHandler();
-            rfidHandler.onCreate(this);
+            if (Build.VERSION.SDK_INT >= 34) { // Android 14 (UPSIDE_DOWN_CAKE)
+                Log.d(TAG, "Android 14+ detected, delaying RFID init for USB stabilization");
+                //tc22 14.35.10 U0 04 (April 2026) crashed, need add delay
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        rfidHandler.onCreate(this);
+                    }
+                }, 1000);
+            } else {
+                rfidHandler.onCreate(this);
+            }
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == BLUETOOTH_PERMISSION_REQUEST_CODE){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (areBluetoothPermissionsGrantedFromResult(permissions, grantResults)) {
                 if (rfidHandler == null) rfidHandler = new RFIDHandler();
                 rfidHandler.onCreate(this);
             } else {
@@ -278,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
         if (!ensureBluetoothPermissionsForRfidInit()) return;
         InitRfidSDK();
         if (rfidHandler != null) {
-            updateStatus(rfidHandler.onResume());
+            rfidHandler.onResume();
         }
     }
 
@@ -318,9 +355,12 @@ public class MainActivity extends AppCompatActivity implements RFIDHandler.Respo
 
     @Override
     public void handleTagdata(TagData[] tagData) {
+        if (tagData == null) return;
         runOnUiThread(() -> {
             for (TagData tagDatum : tagData) {
+                if (tagDatum == null) continue;
                 String tagID = tagDatum.getTagID();
+                if (tagID == null) continue;
                 if (tagMap.containsKey(tagID)) {
                     TagItem item = tagMap.get(tagID);
                     if (item != null) {

@@ -1,5 +1,27 @@
 # Release Notes
 
+## 1.0.3 (Unreleased)
+
+- Title: Permission and Test-Sync Hardening
+
+### Highlights
+
+- Hardened Bluetooth permission result handling to require both Android 12+ runtime permissions before RFID initialization.
+- Improved Bluetooth transport detection robustness for disconnect-recovery decisions.
+- Synchronized instrumentation tests with current app APIs and method signatures.
+- Updated project docs to reflect current, verified branch state.
+
+### Technical Findings Captured
+
+- `MainActivity.onRequestPermissionsResult` now validates permissions by name and requires both `BLUETOOTH_SCAN` and `BLUETOOTH_CONNECT`.
+- `RFIDHandler.updateTransportFlagsFromReader` now uses transport state with host-name fallback (`+`, `RFD8500`) for Bluetooth classification.
+- `ExampleInstrumentedTest` removed obsolete activity API references and corrected `RecordingRFIDHandler.onResume` override to match the current base signature.
+
+### Validation Snapshot
+
+- `./gradlew :app:compileDebugJavaWithJavac` -> PASS
+- `./gradlew :app:compileDebugAndroidTestJavaWithJavac` -> PASS
+
 ## 1.0.2 (2026-04-22)
 
 - Title: Startup UX - Non-blocking Discovery Progress Indicator
