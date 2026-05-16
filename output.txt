@@ -1,0 +1,250 @@
+## main...origin/main
+ D .gradle/8.13/checksums/checksums.lock
+ D .gradle/8.13/checksums/sha1-checksums.bin
+ D .gradle/8.13/executionHistory/executionHistory.bin
+ D .gradle/8.13/executionHistory/executionHistory.lock
+ D .gradle/8.13/fileChanges/last-build.bin
+ D .gradle/8.13/fileHashes/fileHashes.bin
+ D .gradle/8.13/fileHashes/fileHashes.lock
+ D .gradle/8.13/fileHashes/resourceHashesCache.bin
+ D .gradle/8.13/gc.properties
+ M .gradle/9.3.1/executionHistory/executionHistory.bin
+ M .gradle/9.3.1/executionHistory/executionHistory.lock
+ M .gradle/9.3.1/fileHashes/fileHashes.bin
+ M .gradle/9.3.1/fileHashes/fileHashes.lock
+ M .gradle/9.3.1/fileHashes/resourceHashesCache.bin
+ M .gradle/buildOutputCleanup/buildOutputCleanup.lock
+ M .gradle/buildOutputCleanup/outputFiles.bin
+ M .gradle/file-system.probe
+AM CONNECTION_DESIGN.md
+ M README.md
+ M RELEASE.md
+ M app/.DS_Store
+ M app/build/intermediates/android_res_source_set_path_map/debug/mapDebugSourceSetPaths/file-map.txt
+ D app/build/intermediates/apk/debug/app-debug.apk
+ D app/build/intermediates/apk/debug/output-metadata.json
+ M app/build/intermediates/apk_ide_redirect_file/debug/createDebugApkListingFileRedirect/redirect.txt
+ D app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/processDebugResources/R.jar
+ M app/build/intermediates/compile_and_runtime_r_class_jar/debug/processDebugResources/R.jar
+ D app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_4d1d531ae96a6beb352446482348663a45b93615e015d29f49c7fa08438081b7_bucket_0/graph.bin
+ D app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_4d1d531ae96a6beb352446482348663a45b93615e015d29f49c7fa08438081b7_bucket_1/graph.bin
+ D app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_4d1d531ae96a6beb352446482348663a45b93615e015d29f49c7fa08438081b7_bucket_2/graph.bin
+ D app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_4d1d531ae96a6beb352446482348663a45b93615e015d29f49c7fa08438081b7_bucket_3/graph.bin
+ D app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_4d1d531ae96a6beb352446482348663a45b93615e015d29f49c7fa08438081b7_bucket_4/graph.bin
+ D app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_4d1d531ae96a6beb352446482348663a45b93615e015d29f49c7fa08438081b7_bucket_5/graph.bin
+ M app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
+ M app/build/intermediates/dex/debug/mergeProjectDexDebug/1/classes.dex
+ M app/build/intermediates/dex_archive_input_jar_hashes/debug/dexBuilderDebug/out
+ M app/build/intermediates/incremental/debug/mergeDebugResources/compile-file-map.properties
+ M app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values/values.xml
+ M app/build/intermediates/incremental/debug/mergeDebugResources/merger.xml
+ M app/build/intermediates/incremental/mergeDebugAssets/merger.xml
+ M app/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+ D app/build/intermediates/incremental/mergeDebugShaders/merger.xml
+ M app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt
+ M app/build/intermediates/incremental/packageDebug/tmp/debug/zip-cache/androidResources
+ M app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zebra/rfid/demo/sdksample/MainActivity$1.class
+ M app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zebra/rfid/demo/sdksample/MainActivity$TagArrayAdapter.class
+ M app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zebra/rfid/demo/sdksample/MainActivity$TagItem.class
+ M app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zebra/rfid/demo/sdksample/MainActivity.class
+ M app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zebra/rfid/demo/sdksample/RFIDHandler$EventHandler.class
+ M app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zebra/rfid/demo/sdksample/RFIDHandler$ResponseHandlerInterface.class
+ M app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zebra/rfid/demo/sdksample/RFIDHandler.class
+ M app/build/intermediates/linked_resources_binary_format/debug/processDebugResources/linked-resources-binary-format-debug.ap_
+ M app/build/intermediates/manifest_merge_blame_file/debug/processDebugMainManifest/manifest-merger-blame-debug-report.txt
+ M app/build/intermediates/merged_manifest/debug/processDebugMainManifest/AndroidManifest.xml
+ M app/build/intermediates/merged_manifests/debug/processDebugManifest/AndroidManifest.xml
+ M app/build/intermediates/merged_res/debug/mergeDebugResources/values_values.arsc.flat
+ M app/build/intermediates/merged_res_blame_folder/debug/mergeDebugResources/out/multi-v2/mergeDebugResources.json
+ M app/build/intermediates/merged_res_blame_folder/debug/mergeDebugResources/out/multi-v2/values.json
+ M app/build/intermediates/merged_res_blame_folder/debug/mergeDebugResources/out/single/mergeDebugResources.json
+ M app/build/intermediates/packaged_manifests/debug/processDebugManifestForPackage/AndroidManifest.xml
+ D app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/09a40e0d3d0f1621c532e3f733fc86d851f00c72489df53ab6ee0e66c828b69b_0.jar
+ D app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/09a40e0d3d0f1621c532e3f733fc86d851f00c72489df53ab6ee0e66c828b69b_1.jar
+ D app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/09a40e0d3d0f1621c532e3f733fc86d851f00c72489df53ab6ee0e66c828b69b_2.jar
+ D app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/09a40e0d3d0f1621c532e3f733fc86d851f00c72489df53ab6ee0e66c828b69b_3.jar
+ D app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/09a40e0d3d0f1621c532e3f733fc86d851f00c72489df53ab6ee0e66c828b69b_4.jar
+ D app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/09a40e0d3d0f1621c532e3f733fc86d851f00c72489df53ab6ee0e66c828b69b_5.jar
+ M app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/com/zebra/rfid/demo/sdksample/MainActivity$1.dex
+ M app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/com/zebra/rfid/demo/sdksample/MainActivity$TagArrayAdapter.dex
+ M app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/com/zebra/rfid/demo/sdksample/MainActivity$TagItem.dex
+ M app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/com/zebra/rfid/demo/sdksample/MainActivity.dex
+ M app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/com/zebra/rfid/demo/sdksample/RFIDHandler$EventHandler.dex
+ M app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/com/zebra/rfid/demo/sdksample/RFIDHandler$ResponseHandlerInterface.dex
+ M app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/com/zebra/rfid/demo/sdksample/RFIDHandler.dex
+ M app/build/intermediates/runtime_symbol_list/debug/processDebugResources/R.txt
+ D app/build/intermediates/source_set_path_map/debug/mapDebugSourceSetPaths/file-map.txt
+ M app/build/intermediates/stable_resource_ids_file/debug/processDebugResources/stableIds.txt
+ M app/build/outputs/logs/manifest-merger-debug-report.txt
+ D app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/MainActivity$1.class.uniqueId2
+ D app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/MainActivity$TagArrayAdapter.class.uniqueId0
+ D app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/MainActivity$TagItem.class.uniqueId3
+ M app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/MainActivity.class.uniqueId1
+ M app/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
+ M app/src/androidTest/java/com/zebra/rfid/demo/sdksample/ExampleInstrumentedTest.java
+ M app/src/main/java/com/zebra/rfid/demo/sdksample/MainActivity.java
+ M app/src/main/java/com/zebra/rfid/demo/sdksample/RFIDHandler.java
+ M build/reports/problems/problems-report.html
+A  connection_flow.mmd
+ M design.md
+ M "flowchart TD.mmd"
+?? app/build/generated/source/buildConfig/androidTest/
+?? app/build/intermediates/android_res_source_set_path_map/debugAndroidTest/
+?? app/build/intermediates/annotation_processor_list/debugAndroidTest/
+?? app/build/intermediates/compile_and_runtime_r_class_jar/debugAndroidTest/
+?? app/build/intermediates/compile_app_classes_jar/
+?? app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_21155988468ee044c25260170c21130882443f9647a2b19adc6c5facdd26f9f0_bucket_0/
+?? app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_21155988468ee044c25260170c21130882443f9647a2b19adc6c5facdd26f9f0_bucket_1/
+?? app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_21155988468ee044c25260170c21130882443f9647a2b19adc6c5facdd26f9f0_bucket_2/
+?? app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_21155988468ee044c25260170c21130882443f9647a2b19adc6c5facdd26f9f0_bucket_3/
+?? app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_21155988468ee044c25260170c21130882443f9647a2b19adc6c5facdd26f9f0_bucket_4/
+?? app/build/intermediates/desugar_graph/debug/dexBuilderDebug/out/currentProject/jar_21155988468ee044c25260170c21130882443f9647a2b19adc6c5facdd26f9f0_bucket_5/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-af/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-am/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ar/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-as/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-az/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-b+es+419/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-b+sr+Latn/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-be/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-bg/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-bn/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-bs/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ca/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-cs/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-da/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-de/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-el/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rAU/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rCA/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rGB/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rIN/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rXC/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-es-rUS/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-es/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-et/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-eu/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fa/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fi/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fr-rCA/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fr/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-gl/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-gu/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-h320dp-port-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-h360dp-land-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-h480dp-land-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-h550dp-port-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-h720dp-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hdpi-v4/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hi/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hr/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hu/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hy/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-in/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-is/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-it/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-iw/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ja/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ka/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-kk/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-km/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-kn/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ko/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ky/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-land/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-large-v4/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ldltr-v21/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ldrtl-v17/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-lo/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-lt/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-lv/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-mk/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ml/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-mn/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-mr/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ms/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-my/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-nb/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ne/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-night-v8/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-nl/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-or/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pa/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pl/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-port/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pt-rBR/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pt-rPT/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pt/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ro/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ru/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-si/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sk/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sl/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-small-v4/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sq/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sr/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sv/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sw/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sw600dp-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ta/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-te/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-th/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-tl/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-tr/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-uk/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ur/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-uz/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v16/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v17/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v18/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v21/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v22/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v23/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v24/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v25/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v26/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v28/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-vi/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-w320dp-land-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-w360dp-port-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-w480dp-port-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-w600dp-land-v13/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-watch-v20/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-watch-v21/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-xlarge-v4/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zh-rCN/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zh-rHK/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zh-rTW/
+?? app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zu/
+?? app/build/intermediates/incremental/debugAndroidTest/
+?? app/build/intermediates/javac/debugAndroidTest/
+?? app/build/intermediates/linked_resources_binary_format/debugAndroidTest/
+?? app/build/intermediates/manifest_merge_blame_file/debugAndroidTest/
+?? app/build/intermediates/merged_res/debugAndroidTest/
+?? app/build/intermediates/merged_res_blame_folder/debugAndroidTest/
+?? app/build/intermediates/nested_resources_validation_report/debugAndroidTest/
+?? app/build/intermediates/packaged_manifests/debugAndroidTest/
+?? app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/87cfdf53442dcdc30b95cc9f7cad0dc6d9ca187a964db0c32b9bef4c6865b216_0.jar
+?? app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/87cfdf53442dcdc30b95cc9f7cad0dc6d9ca187a964db0c32b9bef4c6865b216_1.jar
+?? app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/87cfdf53442dcdc30b95cc9f7cad0dc6d9ca187a964db0c32b9bef4c6865b216_2.jar
+?? app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/87cfdf53442dcdc30b95cc9f7cad0dc6d9ca187a964db0c32b9bef4c6865b216_3.jar
+?? app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/87cfdf53442dcdc30b95cc9f7cad0dc6d9ca187a964db0c32b9bef4c6865b216_4.jar
+?? app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/87cfdf53442dcdc30b95cc9f7cad0dc6d9ca187a964db0c32b9bef4c6865b216_5.jar
+?? app/build/intermediates/runtime_symbol_list/debugAndroidTest/
+?? app/build/intermediates/stable_resource_ids_file/debugAndroidTest/
+?? app/build/intermediates/symbol_list_with_package_name/debugAndroidTest/
+?? app/build/outputs/apk/
+?? app/build/tmp/compileDebugAndroidTestJavaWithJavac/
+?? app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/MainActivity$1.class.uniqueId3
+?? app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/MainActivity$TagArrayAdapter.class.uniqueId6
+?? app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/MainActivity$TagItem.class.uniqueId5
+?? app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/RFIDHandler$EventHandler.class.uniqueId0
+?? app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/RFIDHandler$ResponseHandlerInterface.class.uniqueId4
+?? app/build/tmp/compileDebugJavaWithJavac/compileTransaction/stash-dir/RFIDHandler.class.uniqueId2
+?? flowchart.png
+?? output.txt
+e0ac21c (HEAD -> main, tag: 1.0.3, origin/main, origin/HEAD) Fixed Spelling
+8e3c78f (tag: 1.0.2) v1.0.2: Integrated non-blocking discovery progress indicator
+f2f7ea4 (tag: 1.0.1) v1.0.1: Add automated transport discovery messaging on startup
+01afe1c (tag: 1.0.0) Release 1.0.0
+d138699 v0.0.4: UI Refinement, Robust Initialization, and Technical Messaging

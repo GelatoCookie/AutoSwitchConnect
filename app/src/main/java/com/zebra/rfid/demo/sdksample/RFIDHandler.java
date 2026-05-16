@@ -52,6 +52,7 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
 
     static final String TAG = "RFID_SAMPLE";
     private static final String NOT_CONNECTED_MESSAGE = "Not connected";
+    private static final long CONNECT_TIMEOUT_SECONDS = 10;
     private Readers readers;
     private ArrayList<ReaderDevice> availableRFIDReaderList;
     private ReaderDevice readerDevice;
@@ -397,17 +398,7 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
                     if (!localReader.isConnected()) {
                         // Establish connection to the RFID Reader
                         long connectStart = System.currentTimeMillis();
-                        try {
-                            localReader.connect();
-                        } catch (Exception e) {
-                            if (e.getMessage() != null && e.getMessage().contains("Already running")) {
-                                Log.w(TAG, "Reader report already running, trying to disconnect and reconnect");
-                                try { localReader.disconnect(); } catch (Exception ignored) {}
-                                localReader.connect();
-                            } else {
-                                throw e;
-                            }
-                        }
+                        connectWithTimeout(localReader);
                         updateTransportFlagsFromReader();
 
                         long connectTimeMillis = System.currentTimeMillis() - connectStart;
@@ -446,6 +437,9 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
                     Log.e(TAG, "OperationFailureException: " + e.getVendorMessage());
                     String details = e.getResults().toString();
                     return "Connection failed: " + details + ".\nVerify device is powered on.";
+                } catch (TimeoutException e) {
+                    Log.e(TAG, "Timed out while connecting reader", e);
+                    return "Connection timed out after " + CONNECT_TIMEOUT_SECONDS + " seconds.\nRetry or re-seat the device.";
                 } catch (SecurityException e) {
                     Log.e(TAG, "SecurityException while connecting reader", e);
                     return "Connection failed: Bluetooth permissions missing";
@@ -457,6 +451,54 @@ class RFIDHandler implements IDcsSdkApiDelegate, Readers.RFIDReaderEventHandler 
             return "";
         } finally {
             isConnecting.set(false);
+        }
+    }
+
+    private void connectWithTimeout(RFIDReader localReader) throws Exception {
+        ExecutorService connectExecutor = Executors.newSingleThreadExecutor();
+        Future<Void> connectFuture = connectExecutor.submit(() -> {
+            attemptConnect(localReader);
+            return null;
+        });
+
+        try {
+            connectFuture.get(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            connectFuture.cancel(true);
+            Thread.currentThread().interrupt();
+            throw e;
+        } catch (TimeoutException e) {
+            connectFuture.cancel(true);
+            try {
+                localReader.disconnect();
+            } catch (Exception disconnectError) {
+                Log.w(TAG, "Disconnect after connect timeout failed", disconnectError);
+            }
+            throw e;
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof Exception) {
+                throw (Exception) cause;
+            }
+            throw new Exception(cause);
+        } finally {
+            connectExecutor.shutdownNow();
+        }
+    }
+
+    private void attemptConnect(RFIDReader localReader) throws Exception {
+        try {
+            localReader.connect();
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("Already running")) {
+                Log.w(TAG, "Reader report already running, trying to disconnect and reconnect");
+                try {
+                    localReader.disconnect();
+                } catch (Exception ignored) {}
+                localReader.connect();
+                return;
+            }
+            throw e;
         }
     }
 

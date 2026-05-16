@@ -6,6 +6,10 @@ This application demonstrates how to use the Zebra RFID SDK to connect to RFID r
 - Remote: https://github.com/GelatoCookie/AutoSwitchConnect
 - Local workspace: /Users/chucklin/StudioProjects/63_TC22AutoConnect/AutoSwitch
 
+## Documentation
+- [APP_NOTE.md](APP_NOTE.md): Connection-flow app note focused on USB permission behavior and timeout-wrapped connect handling.
+- [APP_NOTE.pdf](APP_NOTE.pdf): Technical PDF version of the app note with embedded flowchart graphics.
+- [flowchart TD.mmd](flowchart%20TD.mmd): Current Mermaid flow for RFID initialization, transport selection, and reconnect behavior.
 
 ## Features
 -   **Auto-Connection**: Automatically attempts to connect to available RFID readers on startup or when a device is attached.
